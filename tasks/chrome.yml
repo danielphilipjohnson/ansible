@@ -1,0 +1,49 @@
+- name: Uninstall Google Chrome if installed
+  become: true
+  ansible.builtin.apt:
+    name: google-chrome-stable
+    state: absent
+  tags:
+    - install
+    - chrome
+- name: Download Google Chrome .deb
+  ansible.builtin.get_url:
+    url: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    dest: /tmp/google-chrome-stable_current_amd64.deb
+    mode: '0644'
+  tags:
+    - install
+    - chrome
+
+- name: Install Google Chrome .deb
+  ansible.builtin.dpkg:
+    deb: /tmp/google-chrome-stable_current_amd64.deb
+    state: present
+  tags:
+    - install
+    - chrome
+
+- name: Fix dependencies
+  ansible.builtin.apt:
+    name: _fix_missing_
+    update_cache: yes
+    force_apt_get: yes
+    fix_broken: true
+  tags:
+    - install
+    - chrome
+- name: Check Chrome version
+  command: google-chrome --version
+  register: chrome_version
+  changed_when: false
+  tags:
+    - install
+    - chrome
+
+
+- name: Show Chrome version
+  debug:
+    msg: "Installed Google Chrome version is {{ chrome_version.stdout }}"
+  tags:
+    - install
+    - chrome
