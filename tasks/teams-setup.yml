@@ -1,0 +1,40 @@
+- name: Uninstall Microsoft Teams if installed
+  ansible.builtin.apt:
+    name: teams
+    state: absent
+  tags:
+    - install
+    - teams
+
+
+- name: Add Microsoft GPG key
+  ansible.builtin.apt_key:
+    url: https://packages.microsoft.com/keys/microsoft.asc
+    state: present
+  tags:
+    - install
+    - teams
+
+- name: Add Microsoft Teams repository
+  ansible.builtin.apt_repository:
+    repo: deb [arch=amd64] https://packages.microsoft.com/repos/ms-teams stable main
+    state: present
+    filename: teams
+  tags:
+    - install
+    - teams
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+  tags:
+    - install
+    - teams
+
+- name: Install Microsoft Teams
+  ansible.builtin.apt:
+    name: teams
+    state: present
+  tags:
+    - install
+    - teams
