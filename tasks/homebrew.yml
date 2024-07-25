@@ -1,0 +1,33 @@
+- name: Configure Homebrew environment
+  become: yes
+- name: Check and configure shell environment for local Homebrew
+  ansible.builtin.shell:
+    cmd: |
+      if [ -d "$HOME/.linuxbrew" ]; then
+        eval "$($HOME/.linuxbrew/bin/brew shellenv)"
+      fi
+      if [ -d "/home/linuxbrew/.linuxbrew" ]; then
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+      fi
+  register: shellenv_output
+  changed_when: false
+  tags:
+    - install
+    - homebrew
+
+- name: Update .bashrc for Homebrew
+  ansible.builtin.lineinfile:
+    path: ~/.bashrc
+    line: 'eval "$($(brew --prefix)/bin/brew shellenv)"'
+    create: yes
+    state: present
+  tags:
+  - install
+  - homebrew
+
+- name: Debug shellenv output
+  ansible.builtin.debug:
+    var: shellenv_output.stdout_lines
+  tags:
+  - install
+  - homebrew
