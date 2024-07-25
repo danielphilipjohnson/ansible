@@ -1,0 +1,44 @@
+
+- name: Install and Configure NVM
+  become: false
+  tags:
+    - install
+    - nvm
+
+- name: Install NVM
+  shell: |
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+  args:
+    executable: /bin/bash
+  register: nvm_install
+  changed_when: "'Cloning into' in nvm_install.stdout"
+  tags:
+    - install
+    - nvm
+
+- name: Set up NVM environment in shell profile
+  lineinfile:
+    path: "{{ item }}"
+    line: 'export NVM_DIR="$([ -z "${{XDG_CONFIG_HOME-}}" ] && printf %s "${{HOME}}/.nvm" || printf %s "${{XDG_CONFIG_HOME}}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm'
+    create: yes
+  with_items:
+    - "~/.bash_profile"
+    - "~/.zshrc"
+    - "~/.profile"
+    - "~/.bashrc"
+  when: nvm_install is changed
+  tags:
+    - install
+    - nvm
+
+- name: Source NVM to use immediately without relogin
+  shell: |
+    . ~/.nvm/nvm.sh
+  args:
+    executable: /bin/bash
+  register: nvm_source
+  changed_when: false
+  tags:
+    - install
+    - nvm

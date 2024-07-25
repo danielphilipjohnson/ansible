@@ -1,0 +1,69 @@
+- name: Install ZSH
+  apt: name=zsh
+  tags: &tags_for_zsh_tasks [ 'install', 'productivity', 'dotfiles', 'zsh' ]
+    
+- name: Change shell to zsh
+  shell: chsh -s $(which zsh)
+  tags: *tags_for_zsh_tasks
+
+- name: Check that the somefile.conf exists
+  stat:
+    path: /home/danielphilipjohnson/.oh-my-zsh
+  register: oh_my_stats
+  tags: *tags_for_zsh_tasks
+
+- name: Oh-My-Zsh
+  shell: curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh > ~/.oh-my-installer && chmod +x ~/.oh-my-installer && ~/.oh-my-installer
+  tags: *tags_for_zsh_tasks
+  when: oh_my_stats.stat.exists == False
+  become_user: danielphilipjohnson
+
+- name: Install zsh-autosuggestions
+  ansible.builtin.git:
+    repo: 'https://github.com/zsh-users/zsh-autosuggestions.git'
+    dest: "~/.oh-my-zsh/plugins/zsh-autosuggestions"
+  tags: *tags_for_zsh_tasks
+
+- name: Add aliases and environment settings to .zshrc
+  ansible.builtin.blockinfile:
+    path: /home/danielphilipjohnson/.zshrc
+    block: |
+      alias ll='ls -l --color=auto'
+      alias la='ls -A'
+      alias l='ls -CF'
+      alias ..='cd ..'
+      alias pwd='echo $PWD'
+      alias update='sudo apt-get update'
+      alias install='sudo apt-get install'
+      alias history='fc -l'
+      alias search='grep -rn'
+      alias ps='ps aux'
+      alias du='du -h'
+
+      alias gs='git status'
+      alias ga='git add'
+      alias gc='git commit -m'
+      alias gp='git push'
+      alias gl='git pull'
+      alias glog='git log --graph --oneline --decorate --all
+      alias gcb='git checkout -b'
+      alias gco='git checkout'
+      alias gm='git merge'
+      alias gd='git diff --color-words'
+      alias gap='git add --patch'
+
+      alias y='yarn'
+      alias yolo='rm -rf node_modules/ && yarn install'
+      alias nolo='rm -rf node_modules/ && npm install'
+      alias npmg='npm install --global'
+      alias npmS='npm install --save'
+      alias npmD='npm install --save-dev'
+      alias npmL='npm list'
+      alias npmL0='npm list --depth=0'
+      alias npmst='npm run start'
+      alias npmt='npm run test'
+      alias npmR='npm run'
+
+    create: yes
+  tags: [ 'alias', 'setup', 'zsh' ]
+  become_user: danielphilipjohnson
