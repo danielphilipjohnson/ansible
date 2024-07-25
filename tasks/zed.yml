@@ -1,0 +1,24 @@
+- name: Install Zed via remote script
+  become: yes
+  tags:
+    - install
+    - teams
+  
+- name: Download and execute the Zed install script
+  ansible.builtin.shell: |
+    curl -f https://zed.dev/install.sh | sh
+  args:
+    warn: false  # Disable warnings related to using 'curl | sh' as it's intentional here.
+  register: script_run
+  changed_when: "'already installed' not in script_run.stdout"
+  failed_when: "'ERROR' in script_run.stderr or script_run.rc != 0"
+  tags:
+    - install
+    - teams
+
+- name: Check installation success
+  ansible.builtin.debug:
+    msg: "Installation output: {{ script_run.stdout }}"
+  tags:
+    - install
+    - teams
