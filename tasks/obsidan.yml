@@ -1,0 +1,28 @@
+- name: Install Obsidian via Flatpak
+  become: yes
+  tags:
+    - install
+    - obsidian
+- name: Ensure Flatpak is installed
+  ansible.builtin.apt:
+    name: flatpak
+    state: present
+  tags:
+    - install
+    - obsidian
+
+- name: Add Flathub repository
+  ansible.builtin.shell:
+    cmd: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+  tags:
+    - install
+    - obsidian
+- name: Install Obsidian from Flathub
+  community.general.flatpak:
+    name: md.obsidian.Obsidian
+    state: present
+    method: system
+    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+  tags:
+    - install
+    - obsidian
