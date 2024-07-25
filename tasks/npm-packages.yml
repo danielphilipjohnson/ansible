@@ -1,0 +1,67 @@
+- name: Install Yarn
+  npm:
+    name: yarn
+    global: yes
+  tags:
+    - install
+    - node
+
+- name: Install pnpm
+  npm:
+    name: pnpm
+    global: yes
+  tags:
+    - install
+    - node
+    
+- name: Install eslint
+  npm:
+    name: eslint
+    global: yes
+  tags:
+    - install
+    - node
+- name: Install Typescript server
+  npm:
+    name: typescript-language-server
+    global: yes
+  tags:
+    - install
+    - node
+- name: Install Typescript
+  npm:
+    name: typescript
+    global: yes
+  tags:
+    - install
+    - node
+- name: Install TS-Node
+  npm:
+    name: ts-node
+    global: yes
+  tags:
+    - install
+    - node
+
+- name: Install Nodemon
+  npm:
+    name: nodemon
+    global: yes
+  tags:
+    - install
+    - node
+
+- name: Install Prettier
+  npm:
+    name: prettier
+    global: yes
+  tags:
+    - install
+    - node
+- name: Install ESLint-plugin-react
+  npm:
+    name: eslint-plugin-react
+    global: yes
+  tags:
+    - install
+    - node
