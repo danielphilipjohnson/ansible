@@ -1,0 +1,35 @@
+- hosts: localhost
+  vars:
+    source_key: "./.ssh/id_rsa"
+    dest_key: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
+    personal: "{{ lookup('env', 'HOME') }}/personal"
+    go_version: "1.20.2"  
+    go_root: "/usr/local/go"
+  pre_tasks:
+  - name: Update Apt
+    become: true
+    apt:
+      force_apt_get: true
+      update_cache: true
+      state: present
+    tags:
+      - install
+      - core
+  tasks:
+    - include: tasks/git-setup.yml
+    - include: tasks/core-setup.yml
+    - include: tasks/node-setup.yml
+    - include: tasks/nvm.yml
+    - include: tasks/npm-packages.yml
+    - include: tasks/go-setup.yml
+    - include: tasks/zsh-setup.yml
+    - include: tasks/slack-setup.yml
+    - include: tasks/teams-setup.yml
+    - include: tasks/nvim-setup.yml
+    - include: tasks/brave.yml
+    - include: tasks/chrome.yml
+    - include: tasks/obsidian.yml
+    - include: tasks/vscode.yml
+    - include: tasks/zed.yml
+    - include: tasks/dotfiles.yml
+    - include: tasks/productivity-tools.yml
